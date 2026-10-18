@@ -2,7 +2,7 @@
 
 Documentatia proiectului Software Engineering, 2026–2027. O singura pagina, in romana fara diacritice, cu descrierea proiectului M1 si jurnal pentru etapele viitoare.
 
-**Site public:** https://andreiasm5.github.io/elemetry-fiki/
+**Site public:** https://elemetry-fiki.github.io/
 
 ## Echipa
 
