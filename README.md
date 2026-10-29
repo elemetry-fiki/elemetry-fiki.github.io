@@ -6,8 +6,8 @@ Documentatia proiectului Software Engineering, 2026–2027. O singura pagina, in
 
 ## Echipa
 
-- Andrei Ivascu — cofondator; tehnologie & dezvoltare (rol propus)
-- Diana Ciociou — cofondatoare; produs, UX & validare (rol propus)
+- Andrei Ivascu — tehnologie & dezvoltare (rol propus)
+- Diana Ciociou — produs & UX (rol propus)
 - Ioana Ton — management & marketing (rol propus); ioanaton@gmail.com
 
 ## Continut
