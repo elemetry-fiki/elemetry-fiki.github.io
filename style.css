@@ -19,3 +19,11 @@
 .person:hover .portrait.diana img{transform:none}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 @media print{.header,.sidebar,.hero,.read-progress,.back-top{display:none}main{margin:0}.content-wrap{padding:0}body{background:#fff}.section{padding:25px 0;break-inside:avoid}.document-bar{padding:15px 0}details>p{display:block}.future-milestones{break-before:page}footer{background:#fff;padding:20px 0}a[href^=http]:after{content:' (' attr(href) ')';font-size:8px}.portrait{height:220px}.team-grid{grid-template-columns:1fr 1fr}}
+/* Three complementary roles, with portrait framing specific to Ioana. */
+.team-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.portrait.ioana img,.person:hover .portrait.ioana img{object-fit:cover;object-position:50% 65%;transform:none}
+.person-info .contact-placeholder{border-top:1px solid var(--line);padding-top:17px;font-size:11px;min-height:0;margin-bottom:0}
+.person-info a{overflow-wrap:anywhere}
+@media(min-width:901px) and (max-width:1150px){.team-grid{gap:15px}.person-info{padding:18px}.person-info h3{font-size:24px}}
+@media(max-width:900px){.team-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.team-grid{grid-template-columns:1fr}}
