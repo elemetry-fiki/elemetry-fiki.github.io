@@ -8,7 +8,7 @@ Documentatia proiectului Software Engineering, 2026–2027. O singura pagina, in
 
 - Andrei Ivascu — cofondator; tehnologie & dezvoltare (rol propus)
 - Diana Ciociou — cofondatoare; produs, UX & validare (rol propus)
-- Ioana Ton — management & marketing (rol propus); email de completat
+- Ioana Ton — management & marketing (rol propus); ioanaton@gmail.com
 
 ## Continut
 
