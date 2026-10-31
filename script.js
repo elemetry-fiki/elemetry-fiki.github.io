@@ -20,22 +20,21 @@ let scheduled = false;
 function updateProgress() {
   const max = document.documentElement.scrollHeight - innerHeight;
   progress.style.width = (max > 0 ? scrollY / max * 100 : 0) + '%';
+  updateNavigation();
   scheduled = false;
 }
 addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(updateProgress); } }, { passive: true });
 addEventListener('resize', updateProgress);
-updateProgress();
 const navLinks = [...document.querySelectorAll('.nav-link')];
 const sections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
-const observer = new IntersectionObserver(entries => {
-  const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-  if (!visible.length) return;
-  const id = visible[0].target.id;
+function updateNavigation() {
+  const offset = document.querySelector('.header').offsetHeight + 50;
+  const current = sections.filter(section => section.getBoundingClientRect().top <= offset).at(-1);
   navLinks.forEach(link => {
-    const active = link.getAttribute('href') === '#' + id;
+    const active = current && link.getAttribute('href') === '#' + current.id;
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
   });
-}, { rootMargin: '-15% 0px -65% 0px', threshold: 0 });
-sections.forEach(section => observer.observe(section));
-observer.observe(document.querySelector('#acasa'));
+}
+updateProgress();
+addEventListener('load', updateProgress);
