@@ -34,8 +34,11 @@
 .person:hover .portrait.diana img{transform:none}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 @media print{.header,.sidebar,.hero,.read-progress,.back-top{display:none}main{margin:0}.content-wrap{padding:0}body{background:#fff}.section{padding:25px 0;break-inside:avoid}.document-bar{padding:15px 0}details>p{display:block}.future-milestones{break-before:page}footer{background:#fff;padding:20px 0}a[href^=http]:after{content:' (' attr(href) ')';font-size:8px}.portrait{height:220px}.team-grid{grid-template-columns:1fr 1fr}}
-/* Three complementary roles, with portrait framing specific to Ioana. */
-.team-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+/* Four equal cards in a balanced two-by-two grid. */
+.team-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.team-grid .person{display:flex;flex-direction:column}
+.team-grid .person-info{display:flex;flex-direction:column;flex:1}
+.team-grid .person-info a{margin-top:auto}
 .portrait.ioana img,.person:hover .portrait.ioana img{object-fit:cover;object-position:50% 65%;transform:none}
 .person-info .contact-placeholder{border-top:1px solid var(--line);padding-top:17px;font-size:11px;min-height:0;margin-bottom:0}
 .person-info a{overflow-wrap:anywhere}
