@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Elemetry — Landing Wireframe</title>
+<style>
+  :root {
+    --bg: #f4f4f2;
+    --paper: #ffffff;
+    --ink: #1c1c1c;
+    --muted: #8a8a86;
+    --line: #c9c9c4;
+    --fill: #e7e7e3;
+    --dark: #bdbdb8;
+    --note: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Geist", system-ui, sans-serif; background: var(--bg); color: var(--ink); padding: 16px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tabs button { font: inherit; font-size: 12px; padding: 6px 12px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tabs button:focus-visible, .toggle input:focus-visible { outline: 2px solid var(--note); outline-offset: 2px; }
+  .toggle { font-size: 12px; display: flex; gap: 6px; align-items: center; color: var(--muted); cursor: pointer; }
+
+  .frame { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .browser { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--fill); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .url { margin-left: 8px; font-size: 11px; color: var(--muted); background: var(--paper); padding: 2px 10px; border-radius: 4px; flex: 1; max-width: 280px; font-family: "Geist Mono", monospace; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  section { padding: 40px 28px; border-bottom: 1px dashed var(--line); position: relative; }
+  section:last-child { border-bottom: 0; }
+  .note { position: absolute; top: 8px; right: 10px; font-size: 10px; color: var(--note); font-family: "Geist Mono", monospace; text-transform: uppercase; letter-spacing: .06em; z-index: 2; }
+  body.hide-notes .note { display: none; }
+
+  .wrap { max-width: 980px; margin: 0 auto; }
+  .row { display: flex; gap: 16px; }
+  .col { display: flex; flex-direction: column; gap: 10px; }
+  .grow { flex: 1; min-width: 0; }
+  .center { align-items: center; text-align: center; }
+  .between { justify-content: space-between; align-items: center; }
+  .wrapflex { flex-wrap: wrap; }
+
+  .bar { height: 10px; background: var(--fill); border-radius: 3px; }
+  .bar.sm { height: 7px; }
+  .bar.dark { background: var(--dark); }
+  .h1 { height: 34px; background: var(--dark); border-radius: 5px; }
+  .h2 { height: 20px; background: var(--dark); border-radius: 4px; }
+  .num { height: 18px; width: 54px; background: var(--dark); border-radius: 3px; }
+  .w10{width:10%}.w20{width:20%}.w30{width:30%}.w40{width:40%}.w50{width:50%}.w60{width:60%}.w70{width:70%}.w80{width:80%}.w90{width:90%}.w100{width:100%}
+
+  .img { background: var(--fill); border: 1px solid var(--line); border-radius: 6px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .img.x::before, .img.x::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top right, transparent calc(50% - .5px), var(--line) 50%, transparent calc(50% + .5px)); }
+  .img.x::after { background: linear-gradient(to top left, transparent calc(50% - .5px), var(--line) 50%, transparent calc(50% + .5px)); }
+  .img span { position: relative; z-index: 1; font-size: 10px; color: var(--muted); background: var(--fill); padding: 2px 6px; font-family: "Geist Mono", monospace; }
+  .icon { width: 30px; height: 30px; border: 1.5px solid var(--muted); border-radius: 6px; flex-shrink: 0; }
+  .icon.round { border-radius: 50%; }
+
+  .btn { height: 34px; border: 1.5px solid var(--ink); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; padding: 0 14px; font-family: "Geist Mono", monospace; white-space: nowrap; }
+  .btn.solid { background: var(--ink); color: var(--paper); }
+  .chip { height: 24px; border: 1px solid var(--line); border-radius: 3px; padding: 0 10px; font-size: 10px; display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-family: "Geist Mono", monospace; letter-spacing: .04em; }
+  .eyebrow { font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+  .label { font-size: 10px; color: var(--muted); font-family: "Geist Mono", monospace; }
+  .box { border: 1px solid var(--line); border-radius: 6px; padding: 16px; }
+  .vsep { width: 1px; background: var(--line); align-self: stretch; }
+  .check { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); font-family: "Geist Mono", monospace; }
+  .check::before { content: "✓"; color: var(--ink); }
+
+  /* Nav */
+  .nav { padding: 14px 28px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+  .logo .icon { width: 26px; height: 26px; border-color: var(--ink); }
+  .navlinks { display: flex; gap: 22px; font-size: 12px; color: var(--muted); }
+  .hamburger { display: none; flex-direction: column; gap: 3px; }
+  .hamburger span { width: 18px; height: 2px; background: var(--ink); }
+
+  /* Telemetry */
+  .chart { height: 200px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; background-image: linear-gradient(var(--fill) 1px, transparent 1px), linear-gradient(90deg, var(--fill) 1px, transparent 1px); background-size: 100% 40px, 60px 100%; }
+  .chart svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .anomaly { position: absolute; top: 0; bottom: 0; left: 70%; border-left: 1.5px dashed var(--ink); }
+  .anomaly .label { position: absolute; top: 10px; left: 8px; color: var(--ink); white-space: nowrap; }
+
+  /* Grids */
+  .feature-grid { display: grid; gap: 14px; grid-template-columns: 1.15fr 1fr 1fr; grid-template-rows: auto auto; }
+  .feature-grid .tall { grid-row: span 2; }
+  .stat3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .industries { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .industries > div { display: flex; gap: 10px; align-items: center; justify-content: center; padding: 6px 12px; border-left: 1px solid var(--line); }
+  .industries > div:first-child { border-left: 0; }
+
+  .optabs { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line); }
+  .optabs div { padding: 12px 0; display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+  .optabs div.on { color: var(--ink); font-weight: 600; border-bottom: 2px solid var(--ink); margin-bottom: -1px; }
+  .dash { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .gauge { width: 110px; height: 110px; border-radius: 50%; border: 10px solid var(--dark); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { border: 1px solid var(--line); padding: 16px; text-align: left; vertical-align: middle; }
+  th { font-weight: 400; }
+  td.hl, th.hl { background: #f1f1ee; border-left: 2px solid var(--ink); border-right: 2px solid var(--ink); }
+  tr:last-child td.hl { border-bottom: 2px solid var(--ink); }
+  th.hl { border-top: 2px solid var(--ink); }
+  .x::before { content: "×  "; }
+  .dash-mark::before { content: "—  "; }
+  .ok::before { content: "✓  "; font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+
+  .quote-mark { font-size: 54px; line-height: 1; color: var(--dark); font-family: Georgia, serif; }
+  .avatars { display: flex; }
+  .avatars span { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--paper); background: var(--dark); margin-left: -6px; font-size: 9px; display: flex; align-items: center; justify-content: center; font-family: "Geist Mono", monospace; }
+  .avatars span:first-child { margin-left: 0; }
+  .ctaform { display: flex; border: 1px solid var(--line); border-radius: 4px; padding: 6px; gap: 0; width: 100%; max-width: 760px; }
+  .ctaform .field { flex: 1; padding: 6px 14px; display: flex; flex-direction: column; gap: 6px; text-align: left; border-right: 1px solid var(--line); }
+  .ctaform .field:nth-child(2) { border-right: 0; }
+
+  .legend { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; color: var(--muted); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -2px; margin-right: 4px; }
+
+  @media (max-width: 760px) {
+    section { padding: 32px 16px; }
+    .navlinks, .nav .desk { display: none; }
+    .hamburger { display: flex; }
+    .stack { flex-direction: column; }
+    .stack > .vsep { width: 100%; height: 1px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .feature-grid .tall { grid-row: auto; }
+    .industries { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .industries > div { border-left: 0; justify-content: flex-start; }
+    .optabs { grid-template-columns: 1fr; }
+    .dash { grid-template-columns: 1fr 1fr; }
+    .ctaform { flex-direction: column; }
+    .ctaform .field { border-right: 0; border-bottom: 1px solid var(--line); }
+    .ctaform .btn { margin-top: 6px; }
+    .telemetry-stats { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="tabs" role="tablist" aria-label="Landing page screens">
+      <button role="tab" aria-selected="true" data-target="all">Full page</button>
+      <button role="tab" aria-selected="false" data-target="s1">01 Hero</button>
+      <button role="tab" aria-selected="false" data-target="s2">02 Live telemetry</button>
+      <button role="tab" aria-selected="false" data-target="s3">03 Problem + how it works</button>
+      <button role="tab" aria-selected="false" data-target="s4">04 Operator views</button>
+      <button role="tab" aria-selected="false" data-target="s5">05 Comparison</button>
+      <button role="tab" aria-selected="false" data-target="s6">06 Proof + CTA</button>
+    </div>
+    <label class="toggle"><input type="checkbox" id="notes" checked /> Annotations</label>
+  </div>
+
+  <div class="frame">
+    <div class="browser" aria-hidden="true">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="url">elemetry.com/</span>
+    </div>
+
+    <!-- Global nav -->
+    <section class="nav">
+      <span class="note">Global nav (sticky)</span>
+      <div class="row between">
+        <div class="logo"><span class="icon"></span>elemetry.</div>
+        <nav class="navlinks" aria-label="Wireframe navigation">
+          <span>Product</span><span>Solutions</span><span>Predictive AI</span><span>Case Studies</span><span>ROI Calculator</span>
+        </nav>
+        <div class="row desk" style="align-items:center;gap:14px"><span class="label" style="font-size:11px">Log in</span></div>
+        <div class="hamburger" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+    </section>
+
+    <!-- 01 HERO -->
+    <section class="screen" id="s1">
+      <span class="note">01 Hero</span>
+      <div class="wrap col center" style="gap:16px;padding:24px 0">
+        <span class="chip">● LIVE TELEMETRY + INDUSTRIAL AI &nbsp;|&nbsp; TURN SIGNALS INTO UPTIME</span>
+        <div class="h1 w70" style="height:48px"></div>
+        <div class="h1 w60" style="height:48px"></div>
+        <div class="bar w60" style="margin-top:6px"></div>
+        <div class="bar w50"></div>
+        <span class="btn solid" style="margin-top:12px;height:40px;padding:0 20px">Book a 15-min demo →</span>
+        <div class="row" style="align-items:center;gap:10px">
+          <span class="icon round" style="width:34px;height:34px"></span>
+          <span style="font-size:12px;font-weight:600">View interactive demo</span>
+        </div>
+        <div class="row wrapflex" style="justify-content:center;gap:20px">
+          <span class="check">No production interruption</span>
+          <span class="check">Install in days</span>
+          <span class="check">ROI from month one</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 TELEMETRY -->
+    <section class="screen" id="s2">
+      <span class="note">02 Live telemetry demo + industries</span>
+      <div class="wrap">
+        <div class="box" style="padding:0">
+          <div class="row between stack" style="padding:16px 20px;align-items:flex-start">
+            <div class="col" style="gap:6px">
+              <span class="eyebrow">Live asset telemetry</span>
+              <div class="row" style="align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--ink)"></span><div class="bar dark" style="width:150px"></div></div>
+            </div>
+            <div class="row telemetry-stats" style="gap:24px;align-items:center">
+              <div class="col" style="gap:4px"><span class="label">LOAD</span><div class="num"></div></div>
+              <div class="col" style="gap:4px"><span class="label">CURRENT</span><div class="num"></div></div>
+              <div class="col" style="gap:4px"><span class="label">HEALTH SCORE</span><div class="num"></div></div>
+              <span class="chip" style="color:var(--ink);border-color:var(--ink)">MONITORING</span>
+            </div>
+          </div>
+          <div class="chart" aria-label="Line chart placeholder">
+            <svg viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0 110 C60 105 90 115 140 108 S220 95 270 112 S360 90 420 100 S520 118 580 105 S660 92 700 112 L715 80 L728 140 L742 60 L758 150 L772 70 L790 135 L810 85 L830 125 L850 98 L880 118 L910 105 L950 115 L1000 108" fill="none" stroke="#1c1c1c" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <div class="anomaly"><span class="label">⚠ ANOMALY WINDOW</span></div>
+            <span class="label" style="position:absolute;bottom:6px;left:10px">14:30:18</span>
+            <span class="label" style="position:absolute;bottom:6px;right:10px">NOW</span>
+          </div>
+          <div class="row between stack" style="padding:18px 20px;background:#f7f7f5">
+            <div class="row" style="gap:14px;align-items:flex-start">
+              <span class="icon" style="width:36px;height:36px"></span>
+              <div class="col" style="gap:6px">
+                <span class="label">ELEMETRY AI &nbsp;|&nbsp; 94% confidence</span>
+                <div class="h2" style="width:260px;max-width:100%"></div>
+                <div class="bar" style="width:380px;max-width:100%"></div>
+              </div>
+            </div>
+            <div class="vsep"></div>
+            <div class="col" style="gap:6px;min-width:200px">
+              <span class="label">RECOMMENDED ACTION</span>
+              <div class="bar dark w80"></div>
+              <div class="bar sm w60"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col center" style="margin-top:44px;gap:20px">
+          <span class="eyebrow">Engineered for high-stakes facilities where every minute of stoppage hurts.</span>
+          <div class="industries w100">
+            <div><span class="icon"></span><div class="col" style="gap:4px;width:100px"><div class="bar dark w90"></div><div class="bar sm w60"></div></div></div>
+            <div><span class="icon round"></span><div class="col" style="gap:4px;width:100px"><div class="bar dark w80"></div><div class="bar sm w70"></div></div></div>
+            <div><span class="icon"></span><div class="col" style="gap:4px;width:100px"><div class="bar dark w100"></div><div class="bar sm w50"></div></div></div>
+            <div><span class="icon"></span><div class="col" style="gap:4px;width:100px"><div class="bar dark w70"></div><div class="bar sm w80"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 PROBLEM + HOW IT WORKS -->
+    <section class="screen" id="s3">
+      <span class="note">03 Problem + 4-step value</span>
+      <div class="wrap">
+        <div class="col center" style="gap:12px;margin-bottom:36px">
+          <span class="eyebrow">From reactive to predictive</span>
+          <div class="h1 w50"></div>
+          <div class="h1 w70"></div>
+          <div class="bar w60" style="margin-top:6px"></div>
+          <div class="bar w30"></div>
+        </div>
+        <div class="feature-grid">
+          <div class="box tall col" style="gap:16px;padding:20px">
+            <div class="row" style="align-items:center;gap:8px"><span class="icon round" style="width:18px;height:18px"></span><span class="eyebrow">The cost of reactive maintenance</span></div>
+            <div class="col center" style="gap:0;margin-top:8px">
+              <div class="box" style="width:110px;height:70px;display:flex;align-items:center;justify-content:center"><span class="label">SINGLE ASSET FAILURE</span></div>
+              <div style="width:0;height:22px;border-left:1.5px dashed var(--line)"></div>
+            </div>
+            <div class="stat3">
+              <div class="box col center" style="padding:12px 6px;gap:6px"><div class="num" style="width:44px"></div><div class="bar sm w70"></div></div>
+              <div class="box col center" style="padding:12px 6px;gap:6px"><div class="num" style="width:44px"></div><div class="bar sm w70"></div></div>
+              <div class="box col center" style="padding:12px 6px;gap:6px"><div class="num" style="width:44px"></div><div class="bar sm w70"></div></div>
+            </div>
+            <div class="col" style="margin-top:16px"><div class="h2 w70"></div><div class="bar w100"></div><div class="bar w80"></div></div>
+          </div>
+          <script>
+            const steps = [["01","Monitor"],["02","Detect"],["03","Explain"],["04","Save"]];
+            document.write(steps.map(([n,l]) => `
+              <div class="box col" style="gap:12px;padding:20px;min-height:190px">
+                <div class="row between"><span class="icon"></span><span class="h2" style="width:30px;background:var(--fill)" aria-label="${n}"></span></div>
+                <span class="eyebrow" style="margin-top:20px;color:var(--ink)">${l}</span>
+                <div class="h2 w70"></div>
+                <div class="bar w100"></div><div class="bar w60"></div>
+              </div>`).join(''));
+          </script>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 OPERATOR VIEWS -->
+    <section class="screen" id="s4">
+      <span class="note">04 Tabbed capabilities</span>
+      <div class="wrap">
+        <div class="row between stack" style="align-items:flex-end;gap:32px;margin-bottom:36px">
+          <div class="col grow" style="gap:12px"><span class="eyebrow">Built for every operator</span><div class="h1 w70"></div><div class="h1 w80"></div></div>
+          <div class="col grow"><div class="bar w100"></div><div class="bar w70"></div></div>
+        </div>
+        <div class="optabs" role="presentation">
+          <div class="on"><span class="label">01</span>Intelligent dashboards</div>
+          <div><span class="label">02</span>Alarm prioritization</div>
+          <div><span class="label">03</span>Rapid retrofitting</div>
+        </div>
+        <div class="box row stack" style="border-top:0;border-radius:0 0 6px 6px;padding:32px;gap:32px;align-items:center">
+          <div class="col" style="flex:0 0 38%;gap:12px">
+            <span class="eyebrow" style="color:var(--ink)">One signal. Every decision.</span>
+            <div class="h1 w90" style="height:26px"></div><div class="h1 w60" style="height:26px"></div>
+            <div class="bar w100" style="margin-top:6px"></div><div class="bar w90"></div><div class="bar w50"></div>
+            <span style="font-size:11px;font-weight:600;margin-top:8px">Explore this capability →</span>
+          </div>
+          <div class="box grow col" style="gap:12px;background:#f7f7f5">
+            <div class="row between"><span class="label">PLANT OVERVIEW</span><span class="label">LAST 30 DAYS</span></div>
+            <div class="dash">
+              <div class="box col center" style="grid-row:span 2;justify-content:center;background:var(--paper)"><div class="gauge">94</div><span class="label">PLANT HEALTH</span></div>
+              <div class="box col" style="gap:6px;background:var(--paper)"><span class="label">DOWNTIME AVOIDED</span><div class="num"></div><div class="bar sm w40"></div></div>
+              <div class="box col" style="gap:6px;background:var(--paper)"><span class="label">VALUE PROTECTED</span><div class="num"></div><div class="bar sm w40"></div></div>
+              <div class="box col" style="grid-column:span 2;gap:6px;background:var(--paper)">
+                <div class="row between"><span class="label">ENERGY CONSUMPTION</span><div class="num" style="width:40px;height:12px"></div></div>
+                <svg viewBox="0 0 300 50" style="width:100%;height:50px" aria-hidden="true"><path d="M0 40 C40 40 60 25 100 30 S160 40 190 25 S240 10 260 30 S290 20 300 12" fill="none" stroke="#1c1c1c" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 COMPARISON -->
+    <section class="screen" id="s5">
+      <span class="note">05 Comparison table</span>
+      <div class="wrap">
+        <div class="col center" style="gap:12px;margin-bottom:36px">
+          <span class="eyebrow">A different operating model</span>
+          <div class="h1 w50"></div><div class="h1 w50"></div><div class="h1 w30"></div>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th><span class="label">CAPABILITY</span></th>
+                <th><div class="col" style="gap:4px"><span class="label" style="color:var(--ink)">MANUAL AUDITS</span><span class="label">Quarterly &amp; reactive</span></div></th>
+                <th><div class="col" style="gap:4px"><span class="label" style="color:var(--ink)">LEGACY ENTERPRISE</span><span class="label">Complex &amp; rigid</span></div></th>
+                <th class="hl"><div class="col" style="gap:4px"><div class="logo"><span class="icon"></span>elemetry.</div><span class="label">Continuous intelligence</span></div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <script>
+                const rows = [
+                  ["Time to value","3–6 months","12–24 months","Days"],
+                  ["Failure detection","After the event","Threshold-based","Weeks in advance"],
+                  ["Deployment","Consultant-led","Infrastructure overhaul","Clamp-on &amp; plug-in"],
+                  ["Insight quality","Raw spreadsheets","Generic error codes","Plain-language AI"],
+                  ["Commercial model","Variable fees","Seven-figure CAPEX","Predictable SaaS"]];
+                document.write(rows.map(r => `<tr><td style="font-weight:600">${r[0]}</td><td class="x" style="color:var(--muted)">${r[1]}</td><td class="dash-mark" style="color:var(--muted)">${r[2]}</td><td class="hl ok" style="font-weight:600">${r[3]}</td></tr>`).join(''));
+              </script>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 PROOF + CTA -->
+    <section class="screen" id="s6" style="padding:0">
+      <section>
+        <span class="note">06a Customer insight</span>
+        <div class="wrap row stack" style="gap:32px;align-items:flex-start">
+          <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+          <div class="col grow" style="gap:12px">
+            <span class="eyebrow">Built with the people who keep plants running</span>
+            <div class="h2 w100" style="height:24px"></div><div class="h2 w90" style="height:24px"></div>
+            <div class="bar sm w70" style="margin-top:6px"></div>
+          </div>
+          <div class="vsep"></div>
+          <div class="col" style="flex:0 0 28%;gap:10px">
+            <div class="avatars"><span>EL</span><span>AI</span><span>EE</span></div>
+            <div class="bar dark w60" style="margin-top:6px"></div>
+            <div class="bar w100"></div><div class="bar w80"></div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <span class="note">06b Final CTA + lead form</span>
+        <div class="wrap col center" style="gap:14px;padding:20px 0">
+          <span class="eyebrow">Your next shift starts now</span>
+          <div class="h1 w70" style="height:44px"></div><div class="h1 w50" style="height:44px"></div>
+          <div class="bar w50" style="margin-top:6px"></div>
+          <div class="ctaform" style="margin-top:14px">
+            <div class="field"><span class="label">WORK EMAIL</span><span style="font-size:11px;color:var(--muted)">you@company.com</span></div>
+            <div class="field"><span class="label">PLANT TYPE / MACHINE COUNT</span><span style="font-size:11px;color:var(--muted)">e.g. Food processing, 40 machines</span></div>
+            <span class="btn solid" style="height:auto;min-height:44px;padding:0 22px">Request pilot access →</span>
+          </div>
+          <div class="row wrapflex" style="justify-content:center;gap:22px;margin-top:6px">
+            <span class="check">SOC 2 ready</span><span class="check">Non-invasive installation</span><span class="check">100% data sovereignty</span>
+          </div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--dark)"></i>Heading / key value</span>
+    <span><i style="background:var(--fill)"></i>Body text</span>
+    <span><i style="border:1.5px solid var(--muted)"></i>Icon</span>
+    <span><i style="background:var(--ink)"></i>Primary CTA</span>
+    <span style="color:var(--note)">Blue = annotation</span>
+  </div>
+
+<script>
+  const tabs = [...document.querySelectorAll('[role=tab]')];
+  const screens = [...document.querySelectorAll('.screen')];
+  const select = (tab) => {
+    const target = tab.dataset.target;
+    tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+    screens.forEach(s => s.classList.toggle('active', target === 'all' || s.id === target));
+  };
+  tabs.forEach((t, i) => {
+    t.tabIndex = i === 0 ? 0 : -1;
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', e => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); select(n); }
+    });
+  });
+  select(tabs[0]);
+  document.getElementById('notes').addEventListener('change', e => document.body.classList.toggle('hide-notes', !e.target.checked));
+</script>
+</body>
+</html>
